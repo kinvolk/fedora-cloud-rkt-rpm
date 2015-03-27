@@ -1,0 +1,11 @@
+#
+# 
+#
+[Unit]
+Description=Rocket Metadata Service
+
+[Service]
+ExecStart=/usr/bin/rkt metadata-service
+
+[Install]
+WantedBy=multi-user.target
