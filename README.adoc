@@ -1,0 +1,14 @@
+== Rocket RPM
+
+This source tree provides the means to create an RPM from the source tree of the
+Rocket implementation of the Application Container Specification.
+
+The goal is to make Rocket available as an installable package for any
+distribution which uses RPM as the binary distribution mechanism.
+
+== References
+
+- Rocket Source Tree
+    https://github.com/coreos/rocket
+- Application Container Specification
+    https://github.com/appc/spec
