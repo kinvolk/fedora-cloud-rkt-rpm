@@ -51,10 +51,16 @@ GOPATH=$GOPATH:%{gopath}:$(pwd)/Godeps/_workspace RKT_STAGE1_USR_FROM=src ./buil
 
 %install
 # create install dirs
-install -dp %{buildroot}{%{_bindir},%{_libexecdir}/rocket/stage1,%{_unitdir}}
+install -dp %{buildroot}{%{_bindir},%{_libexecdir}/%{repo}/stage1,%{_unitdir}}
 
 # install rkt binary
 install -p -m 755 bin/rkt %{buildroot}%{_bindir}
+
+# install init
+install -p -m 755 bin/init %{buildroot}%{_libexecdir}/%{repo}/stage1
+
+# install stage1.aci
+install -p -m 644 bin/stage1.aci %{buildroot}%{_libexecdir}/%{repo}
 
 # Install metadata unitfile
 install -p -m 644 %{SOURCE2} %{buildroot}%{_unitdir}
@@ -78,6 +84,7 @@ exit 0
 %doc Documentation/getting-started-guide.md Documentation/hacking.md
 %{_bindir}/rkt
 %{_unitdir}/%{repo}-metadata.service
+%{_libexecdir}/%{name}/*
 
 %changelog
 * Sat Mar 28 2015 Lokesh Mandvekar <lsm5@fedoraproject.org> - 0.5.1-2.git9d66f8c
