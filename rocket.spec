@@ -7,17 +7,19 @@
 %global repo rocket
 
 %global import_path %{provider}.%{provider_tld}/%{project}/%{repo}
-%global commit 58bd354961a54c841c9b0ea7a5cea5716e74c29a 
+%global commit 9d66f8c679599afec6cec543cb1f2455d3c2fb8e
 %global shortcommit %(c=%{commit}; echo ${c:0:7})
 
 Name: %{repo}
 Version: 0.5.1
-Release: 1.git%{shortcommit}%{?dist}
+Release: 2.git%{shortcommit}%{?dist}
 Summary: CLI for running app containers
 License: ASL 2.0
 URL: https://%{import_path}
 ExclusiveArch: x86_64
-Source0: https://%{import_path}/archive/%{commit}/%{name}-%{shortcommit}.tar.gz
+Source0: https://github.com/lsm5/rocket/archive/%{commit}/%{name}-%{shortcommit}.tar.gz
+Source1: README.adoc
+Source2: %{repo}-metadata.service
 BuildRequires: glibc-static
 BuildRequires: golang >= 1.3.3
 BuildRequires: go-bindata >= 3.0.7-1
@@ -29,6 +31,11 @@ BuildRequires: intltool
 BuildRequires: libtool
 BuildRequires: gperf
 BuildRequires: libcap-devel
+BuildRequires: systemd
+Requires(post): systemd
+Requires(preun): systemd
+Requires(postun): systemd
+
 
 %description
 %{summary}
@@ -43,19 +50,41 @@ BuildRequires: libcap-devel
 GOPATH=$GOPATH:%{gopath}:$(pwd)/Godeps/_workspace RKT_STAGE1_USR_FROM=src ./build
 
 %install
-# install binaries
-install -dp %{buildroot}{%{_bindir},%{_libexecdir}/rocket/stage1}
+# create install dirs
+install -dp %{buildroot}{%{_bindir},%{_libexecdir}/rocket/stage1,%{_unitdir}}
+
+# install rkt binary
 install -p -m 755 bin/rkt %{buildroot}%{_bindir}
+
+# Install metadata unitfile
+install -p -m 644 %{SOURCE2} %{buildroot}%{_unitdir}
 
 %pre
 getent group %{name} > /dev/null || %{_sbindir}/groupadd -r %{name}
+exit 0
+
+%post
+%systemd_post %{repo}-metadata
+
+%preun
+%systemd_preun %{repo}-metadata
+
+%postun
+%systemd_postun_with_restart %{repo}-metadata
+
 
 %files
 %doc CONTRIBUTING.md DCO LICENSE NOTICE README.md
 %doc Documentation/getting-started-guide.md Documentation/hacking.md
 %{_bindir}/rkt
+%{_unitdir}/%{repo}-metadata.service
 
 %changelog
+* Sat Mar 28 2015 Lokesh Mandvekar <lsm5@fedoraproject.org> - 0.5.1-2.git9d66f8c
+- use github.com/lsm5/rocket branch systemd-vendored which includes a checked
+out systemd v215 tree instead of git cloning it
+- should allow building the rpm in a mock/koji environment
+
 * Fri Mar 27 2015 Lokesh Mandvekar <lsm5@fedoraproject.org> - 0.5.1-1.git58bd354
 - update to latest upstream master
 
