@@ -97,5 +97,5 @@ via Václav Pavlin <vpavlin@redhat.com>
 - Initial package
 - install init in libexec/rocket/stage1
 https://github.com/coreos/rocket/issues/173
-thanks Jonathan Boulle <https://github.com/jonboulle> 
+thanks Jonathan Boulle <https://github.com/jonboulle>
 and Tom Prince <tom.prince@ualberta.net>
