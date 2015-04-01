@@ -1,18 +1,18 @@
-== Rocket RPM
+== rkt RPM
 
 This source tree provides the means to create an RPM from the source tree of the
-Rocket implementation of the Application Container Specification.
+rkt implementation of the Application Container Specification.
 
-The goal is to make Rocket available as an installable package for any
+The goal is to make rkt available as an installable package for any
 distribution which uses RPM as the binary distribution mechanism.
 
 A further goal is to get the packaging files incorporated into the
-upstream source tree for the Rocket process so that packaging is
+upstream source tree for the rkt process so that packaging is
 considered a first-class part of the development and build process.
 
 == Package Files
 
-The Rocket package will consist of three (3) binary files and a set of
+The rkt package will consist of three (3) binary files and a set of
 supporting files and directories.  The placement of the files will be
 consistent with the
 https://fedoraproject.org/wiki/Packaging:Guidelines[Fedora Packaging
@@ -20,9 +20,9 @@ Guidelines].
 
 ```
 /usr/bin/rkt
-/usr/lib/systemd/system/rocket-metadata.service
-/usr/libexec/rocket/stage1.aci
-/usr/share/doc/rocket/*
+/usr/lib/systemd/system/rkt-metadata.service
+/usr/libexec/rkt/stage1.aci
+/usr/share/doc/rkt/*
 /var/lib/rkt
 /var/lib/rkt/cas
 /var/lib/rkt/cas/db
@@ -32,7 +32,7 @@ Guidelines].
 
 === Executable files: `rkt`
 
-- `rkt`: The Rocket CLI tool - retrive and run containers
+- `rkt`: The rkt CLI tool - retrive and run containers
 
 This is the CLI tool which is used to retrieve images and execute
 containers. It provides commands for fetching, examining and
@@ -40,25 +40,25 @@ controlling containers as well as cleanup and initialization.
 
 === Service Control Files
 
-- rocket-metadata.service
+- rkt-metadata.service
 
-Rocket containers which require a private network must get their
-network information from the Rocket *metadata* service. The network is
+rkt containers which require a private network must get their
+network information from the rkt *metadata* service. The network is
 established by the `rkt` binary and the network plugins and so is
 unknown by the user at invocation.
 
-The Rocket metadata service provides a way for the Rocket startup
+The rkt metadata service provides a way for the rkt startup
 process to provide the network information (and other potentially
 sensitive information) to the container.
 
-The Rocket metadata service can be started and monitored by
-`systemd`. The `rocket-metadata.service` file adds the controls for
+The rkt metadata service can be started and monitored by
+`systemd`. The `rkt-metadata.service` file adds the controls for
 the metadata service to the systemd repository.
 
 NOTE: 27-Mar-2015 - service files for the metadata pipe and the metadata service
 have been included upstream - ML: 
 
-https://github.com/coreos/rocket/pull/674[add system service and
+https://github.com/coreos/rkt/pull/674[add system service and
 socket files]
 
 === The Stage1 Image: `stage1.aci`
@@ -66,7 +66,7 @@ socket files]
 The stage1 image is an Application Container Specification compliant
 image file.  It contains the intermediate framework and the tools
 necessary to set up the pre-start environment for a new container.
-Some of the contents are compiled as part of the Rocket build
+Some of the contents are compiled as part of the rkt build
 process.  Others are standard OS startup files (systemd).  These are
 currently extracted from a stock CoreOS bootable image, but they could
 be built from source or pulled from other packages depending on the
@@ -90,51 +90,51 @@ expanded to a search path.  This would allow distributions with
 specifications for the locations of extra binaries to conform.
 
 For RPM based packaging, the default stage1 image should reside in
-`/usr/libexec/rocket/stage1.img`.
+`/usr/libexec/rkt/stage1.img`.
 
 === Runtime Storage and Database
 
-Rocket retrieves and unpacks Application Container images, and
+rkt retrieves and unpacks Application Container images, and
 instantiates containers on behalf of users.  The container image files
 and the containers themselves must have a place on the host
 filesystem.
 
 The runtime storage and control databases reside in
-`/var/lib/rocket`. The directories are created and ownership and
+`/var/lib/rkt`. The directories are created and ownership and
 permission set when the package is installed.
 
-== Rocket Group, Ownership and Permissions
+== rkt Group, Ownership and Permissions
 
-Currently the enabling technology for Rocket, _nsenter_ requires root
+Currently the enabling technology for rkt, _nsenter_ requires root
 privileges. However, a number of precursor operations, such as
 management of image files and pre-run or post-run containers, do not
 require root.
 
-Non-root operations can be enabled by creating a _rocket_ group (in
+Non-root operations can be enabled by creating a _rkt_ group (in
 `/etc/group`) and setting the group ownership and permissions of the
-directories in `/var/lib/rocket` so that members of the rocket group
+directories in `/var/lib/rkt` so that members of the rkt group
 have access.
 
-The Rocket package should create the _rocket_ group if it is not
+The rkt package should create the _rkt_ group if it is not
 present at installation, and the package installation should set the
 group and permissions of the storage and database directories to
 enable non-root operations.
 
 == Sources
 
-The Rocket RPM will be built entirely from upstream sources. Any
+The rkt RPM will be built entirely from upstream sources. Any
 auxilliary files will be tracked here with the goal of getting them
 accepted upstream.
 
-=== Rocket Binary Sources
+=== rkt Binary Sources
 
-The Rocket sources will be retrieved from the Github repository at or
+The rkt sources will be retrieved from the Github repository at or
 just prior to package build time. If they are retrieved prior to
 build, they will be collected in a gzipped tar archive for holding.
 
 === Stage1 Image Sources
 
-The rocket deliverable requires a *stage1 image* which is the template
+The rkt deliverable requires a *stage1 image* which is the template
 used to create the namespaces which will contain the image processes.
 
 Currently the stage1 image is created using elements pulled from a
@@ -148,12 +148,12 @@ from well known RPMs.
 If a new source for these files is added, it should be controlled with the existing build switch: `RKT_STAGE1_USR_FROM=(src|??)` .
 
 It is possible that, in the future, the stage1 image build process will be made
-distinct from the Rocket binary build process. In that case it may be
+distinct from the rkt binary build process. In that case it may be
 made a separate dependent package
 
 == References
 
-- Rocket Source Tree
-    https://github.com/coreos/rocket
+- rkt Source Tree
+    https://github.com/coreos/rkt
 - Application Container Specification
     https://github.com/appc/spec

@@ -4,7 +4,7 @@
 %global provider github
 %global provider_tld com
 %global project coreos
-%global repo rocket
+%global repo rkt
 
 %global import_path %{provider}.%{provider_tld}/%{project}/%{repo}
 %global commit 9d66f8c679599afec6cec543cb1f2455d3c2fb8e
@@ -17,7 +17,7 @@ Summary: CLI for running app containers
 License: ASL 2.0
 URL: https://%{import_path}
 ExclusiveArch: x86_64
-Source0: https://github.com/lsm5/rocket/archive/%{commit}/%{name}-%{shortcommit}.tar.gz
+Source0: https://github.com/lsm5/rkt/archive/%{commit}/%{name}-%{shortcommit}.tar.gz
 Source1: README.adoc
 Source2: %{repo}-metadata.service
 BuildRequires: glibc-static
@@ -51,7 +51,7 @@ GOPATH=$GOPATH:%{gopath}:$(pwd)/Godeps/_workspace RKT_STAGE1_USR_FROM=src ./buil
 
 %install
 # create install dirs
-install -dp %{buildroot}{%{_bindir},%{_libexecdir}/rocket/stage1,%{_unitdir}}
+install -dp %{buildroot}{%{_bindir},%{_libexecdir}/rkt/stage1,%{_unitdir}}
 
 # install rkt binary
 install -p -m 755 bin/rkt %{buildroot}%{_bindir}
@@ -81,7 +81,7 @@ exit 0
 
 %changelog
 * Sat Mar 28 2015 Lokesh Mandvekar <lsm5@fedoraproject.org> - 0.5.1-2.git9d66f8c
-- use github.com/lsm5/rocket branch systemd-vendored which includes a checked
+- use github.com/lsm5/rkt branch systemd-vendored which includes a checked
 out systemd v215 tree instead of git cloning it
 - should allow building the rpm in a mock/koji environment
 
@@ -95,7 +95,7 @@ via Václav Pavlin <vpavlin@redhat.com>
 
 * Tue Dec 02 2014 Lokesh Mandvekar <lsm5@fedoraproject.org> - 0.1.0-1.git553023e
 - Initial package
-- install init in libexec/rocket/stage1
-https://github.com/coreos/rocket/issues/173
+- install init in libexec/rkt/stage1
+https://github.com/coreos/rkt/issues/173
 thanks Jonathan Boulle <https://github.com/jonboulle>
 and Tom Prince <tom.prince@ualberta.net>
