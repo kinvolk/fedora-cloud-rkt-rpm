@@ -7,17 +7,17 @@
 %global repo rkt
 
 %global import_path %{provider}.%{provider_tld}/%{project}/%{repo}
-%global commit 9d66f8c679599afec6cec543cb1f2455d3c2fb8e
+%global commit a72ad99b1ce95d2c935c72e5054fbb11c3b7d128
 %global shortcommit %(c=%{commit}; echo ${c:0:7})
 
 Name: %{repo}
-Version: 0.5.1
-Release: 2.git%{shortcommit}%{?dist}
+Version: 0.5.3
+Release: 1.git%{shortcommit}%{?dist}
 Summary: CLI for running app containers
 License: ASL 2.0
 URL: https://%{import_path}
 ExclusiveArch: x86_64
-Source0: https://github.com/lsm5/rkt/archive/%{commit}/%{name}-%{shortcommit}.tar.gz
+Source0: https://%{import_path}/archive/%{commit}/%{repo}-%{shortcommit}.tar.gz
 Source1: README.adoc
 Source2: %{repo}-metadata.service
 BuildRequires: glibc-static
@@ -25,12 +25,6 @@ BuildRequires: golang >= 1.3.3
 BuildRequires: go-bindata >= 3.0.7-1
 BuildRequires: squashfs-tools
 BuildRequires: golang(github.com/appc/spec/schema/types)
-BuildRequires: libgcrypt-devel
-BuildRequires: gtk-doc
-BuildRequires: intltool
-BuildRequires: libtool
-BuildRequires: gperf
-BuildRequires: libcap-devel
 BuildRequires: systemd
 Requires(post): systemd
 Requires(preun): systemd
@@ -44,23 +38,23 @@ Requires(postun): systemd
 %setup -qn %{name}-%{commit}
 
 %build
-# using RKT_STAGE1_USR_FROM=src doesn't fetch coreos pxe image
-# but builds systemd from source
-# TODO: eliminate the build process perhaps and fetch systemd stuff from rpms
-GOPATH=$GOPATH:%{gopath}:$(pwd)/Godeps/_workspace RKT_STAGE1_USR_FROM=src ./build
+mkdir -p ./_build/src/github.com/%{project}
+ln -s $(pwd) ./_build/src/%{import_path}
+GOPATH=$GOPATH:%{gopath}:$(pwd)/Godeps/_workspace:$(pwd)/_build \
+       go build -o bin/%{repo} ./_build/src/%{import_path}/%{repo}
 
 %install
 # create install dirs
-install -dp %{buildroot}{%{_bindir},%{_libexecdir}/rkt/stage1,%{_unitdir}}
+install -dp %{buildroot}{%{_bindir},%{_unitdir}}
 
 # install rkt binary
-install -p -m 755 bin/rkt %{buildroot}%{_bindir}
+install -p -m 755 bin/%{repo} %{buildroot}%{_bindir}
 
 # Install metadata unitfile
 install -p -m 644 %{SOURCE2} %{buildroot}%{_unitdir}
 
 %pre
-getent group %{name} > /dev/null || %{_sbindir}/groupadd -r %{name}
+getent group %{repo} > /dev/null || %{_sbindir}/groupadd -r %{name}
 exit 0
 
 %post
@@ -76,10 +70,13 @@ exit 0
 %files
 %doc CONTRIBUTING.md DCO LICENSE NOTICE README.md
 %doc Documentation/getting-started-guide.md Documentation/hacking.md
-%{_bindir}/rkt
+%{_bindir}/%{repo}
 %{_unitdir}/%{repo}-metadata.service
 
 %changelog
+* Sat Mar 28 2015 Lokesh Mandvekar <lsm5@fedoraproject.org> - 0.5.1-3.gita72ad99
+- update to 0.5.3+git
+
 * Sat Mar 28 2015 Lokesh Mandvekar <lsm5@fedoraproject.org> - 0.5.1-2.git9d66f8c
 - use github.com/lsm5/rkt branch systemd-vendored which includes a checked
 out systemd v215 tree instead of git cloning it
