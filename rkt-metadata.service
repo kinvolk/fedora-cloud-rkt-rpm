@@ -2,7 +2,7 @@
 # 
 #
 [Unit]
-Description=Rocket Metadata Service
+Description=rkt Metadata Service
 
 [Service]
 ExecStart=/usr/bin/rkt metadata-service
