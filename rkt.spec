@@ -71,7 +71,7 @@ exit 0
 %{_unitdir}/%{repo}-metadata.service
 
 %changelog
-* Sat Mar 28 2015 Lokesh Mandvekar <lsm5@fedoraproject.org> - 0.5.1-3.gita72ad99
+* Thu Apr 02 2015 Lokesh Mandvekar <lsm5@fedoraproject.org> - 0.5.1-3.gita72ad99
 - update to 0.5.3+git
 
 * Sat Mar 28 2015 Lokesh Mandvekar <lsm5@fedoraproject.org> - 0.5.1-2.git9d66f8c
