@@ -19,7 +19,6 @@ URL: https://%{import_path}
 ExclusiveArch: x86_64
 Source0: https://%{import_path}/archive/%{commit}/%{repo}-%{shortcommit}.tar.gz
 Source1: README.adoc
-Source2: %{repo}-metadata.service
 BuildRequires: glibc-static
 BuildRequires: golang >= 1.3.3
 BuildRequires: go-bindata >= 3.0.7-1
@@ -29,7 +28,6 @@ BuildRequires: systemd
 Requires(post): systemd
 Requires(preun): systemd
 Requires(postun): systemd
-
 
 %description
 %{summary}
@@ -41,7 +39,8 @@ Requires(postun): systemd
 mkdir -p ./_build/src/github.com/%{project}
 ln -s $(pwd) ./_build/src/%{import_path}
 GOPATH=$GOPATH:%{gopath}:$(pwd)/Godeps/_workspace:$(pwd)/_build \
-       go build -o bin/%{repo} ./_build/src/%{import_path}/%{repo}
+       go build -ldflags "-X main.defaultStage1Image '${RKT_STAGE1_IMAGE}'" -o bin/%{repo} \
+       ./_build/src/%{import_path}/%{repo}
 
 %install
 # create install dirs
@@ -50,8 +49,8 @@ install -dp %{buildroot}{%{_bindir},%{_unitdir}}
 # install rkt binary
 install -p -m 755 bin/%{repo} %{buildroot}%{_bindir}
 
-# Install metadata unitfile
-install -p -m 644 %{SOURCE2} %{buildroot}%{_unitdir}
+# install metadata unitfile
+install -p -m 644 dist/init/systemd/%{repo}-metadata.service %{buildroot}%{_unitdir}
 
 %pre
 getent group %{repo} > /dev/null || %{_sbindir}/groupadd -r %{name}
@@ -66,10 +65,8 @@ exit 0
 %postun
 %systemd_postun_with_restart %{repo}-metadata
 
-
 %files
-%doc CONTRIBUTING.md DCO LICENSE NOTICE README.md
-%doc Documentation/getting-started-guide.md Documentation/hacking.md
+%doc CONTRIBUTING.md DCO LICENSE MAINTAINERS NOTICE README.md Documentation/*
 %{_bindir}/%{repo}
 %{_unitdir}/%{repo}-metadata.service
 
@@ -94,5 +91,5 @@ via Václav Pavlin <vpavlin@redhat.com>
 - Initial package
 - install init in libexec/rkt/stage1
 https://github.com/coreos/rkt/issues/173
-thanks Jonathan Boulle <https://github.com/jonboulle>
+thanks Jonathan Boulle <jonathan.boulle@coreos.com>
 and Tom Prince <tom.prince@ualberta.net>
