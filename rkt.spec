@@ -43,7 +43,7 @@ GOPATH=$GOPATH:%{gopath}:$(pwd)/Godeps/_workspace:$(pwd)/_build \
 
 %install
 # create install dirs
-install -dp %{buildroot}{%{_bindir},%{_unitdir}}
+install -dp %{buildroot}{%{_bindir},%{_libexecdir}/%{repo},%{_unitdir}}
 
 # install rkt binary
 install -p -m 755 bin/%{repo} %{buildroot}%{_bindir}
