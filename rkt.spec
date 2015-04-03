@@ -26,6 +26,12 @@ BuildRequires: squashfs-tools
 BuildRequires: golang(github.com/appc/spec/schema/types)
 BuildRequires: systemd
 BuildRequires: git
+BuildRequires: libgcrypt-devel
+BuildRequires: gtk-doc
+BuildRequires: intltool
+BuildRequires: libtool
+BuildRequires: gperf
+BuildRequires: libcap-devel
 Requires(post): systemd
 Requires(preun): systemd
 Requires(postun): systemd
