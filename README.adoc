@@ -80,7 +80,7 @@ CoreOS image to provide the _systemd_ files in `/usr`:
 When alternate methods of retrieving or producing these files is
 added, it should extend the existing mecanisms.
 
-The `stage1.img` file is used by the `rkt` binary when a new container
+The `stage1.aci` file is used by the `rkt` binary when a new container
 is run.  It can be replaced at the invocation using the
 `--stage1-image` option.
 
@@ -90,7 +90,7 @@ expanded to a search path.  This would allow distributions with
 specifications for the locations of extra binaries to conform.
 
 For RPM based packaging, the default stage1 image should reside in
-`/usr/libexec/rkt/stage1.img`.
+`/usr/libexec/rkt/stage1.aci`.
 
 === Runtime Storage and Database
 
