@@ -7,12 +7,12 @@
 %global repo rkt
 
 %global import_path %{provider}.%{provider_tld}/%{project}/%{repo}
-%global commit a72ad99b1ce95d2c935c72e5054fbb11c3b7d128
+%global commit ae78000a3d38fae4009699bf7494b293523d5810
 %global shortcommit %(c=%{commit}; echo ${c:0:7})
 
 Name: %{repo}
 Version: 0.5.3
-Release: 2.git%{shortcommit}%{?dist}
+Release: 3.git%{shortcommit}%{?dist}
 Summary: CLI for running app containers
 License: ASL 2.0
 URL: https://%{import_path}
@@ -75,6 +75,9 @@ exit 0
 %{_unitdir}/%{repo}-metadata.s*
 
 %changelog
+* Fri Apr 03 2015 Lokesh Mandvekar <lsm5@fedoraproject.org> - 0.5.3-3.gitae78000
+- built rkt commit#ae78000
+
 * Thu Apr 02 2015 Lokesh Mandvekar <lsm5@fedoraproject.org> - 0.5.3-2.gita72ad99
 - install stage1.aci and metadata socket file
 
