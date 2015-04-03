@@ -12,7 +12,7 @@
 
 Name: %{repo}
 Version: 0.5.3
-Release: 1.git%{shortcommit}%{?dist}
+Release: 2.git%{shortcommit}%{?dist}
 Summary: CLI for running app containers
 License: ASL 2.0
 URL: https://%{import_path}
@@ -33,14 +33,13 @@ Requires(postun): systemd
 %{summary}
 
 %prep
-%setup -qn %{name}-%{commit}
+%setup -qn %{repo}-%{commit}
 
 %build
-mkdir -p ./_build/src/github.com/%{project}
-ln -s $(pwd) ./_build/src/%{import_path}
+# some issues in here prevent fedora approval
+# using COPR until then
 GOPATH=$GOPATH:%{gopath}:$(pwd)/Godeps/_workspace:$(pwd)/_build \
-       go build -ldflags "-X main.defaultStage1Image '${RKT_STAGE1_IMAGE}'" -o bin/%{repo} \
-       ./_build/src/%{import_path}/%{repo}
+       RKT_STAGE1_USR_FROM=src ./build
 
 %install
 # create install dirs
@@ -49,11 +48,15 @@ install -dp %{buildroot}{%{_bindir},%{_unitdir}}
 # install rkt binary
 install -p -m 755 bin/%{repo} %{buildroot}%{_bindir}
 
-# install metadata unitfile
+# install stage1.aci
+install -p -m 644 bin/stage1.aci %{buildroot}%{_libexecdir}/%{repo}
+
+# install metadata unitfiles
 install -p -m 644 dist/init/systemd/%{repo}-metadata.service %{buildroot}%{_unitdir}
+install -p -m 644 dist/init/systemd/%{repo}-metadata.socket %{buildroot}%{_unitdir}
 
 %pre
-getent group %{repo} > /dev/null || %{_sbindir}/groupadd -r %{name}
+getent group %{repo} > /dev/null || %{_sbindir}/groupadd -r %{repo}
 exit 0
 
 %post
@@ -68,9 +71,13 @@ exit 0
 %files
 %doc CONTRIBUTING.md DCO LICENSE MAINTAINERS NOTICE README.md Documentation/*
 %{_bindir}/%{repo}
-%{_unitdir}/%{repo}-metadata.service
+%{_libexecdir}/%{repo}/*
+%{_unitdir}/%{repo}-metadata.s*
 
 %changelog
+* Thu Apr 02 2015 Lokesh Mandvekar <lsm5@fedoraproject.org> - 0.5.3-2.gita72ad99
+- install stage1.aci and metadata socket file
+
 * Thu Apr 02 2015 Lokesh Mandvekar <lsm5@fedoraproject.org> - 0.5.3-1.gita72ad99
 - update to 0.5.3+git
 
