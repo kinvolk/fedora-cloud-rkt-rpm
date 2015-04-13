@@ -46,7 +46,8 @@ Requires(postun): systemd
 # some issues in here prevent fedora approval
 # using COPR until then
 GOPATH=$GOPATH:%{gopath}:$(pwd)/Godeps/_workspace:$(pwd)/_build \
-       RKT_STAGE1_USR_FROM=src ./build
+       RKT_STAGE1_USR_FROM=src \
+       RKT_STAGE1_IMAGE=%{_libexecdir}/%{repo}/stage1.aci ./build
 
 %install
 # create install dirs
