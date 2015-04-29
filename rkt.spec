@@ -7,12 +7,12 @@
 %global repo rkt
 
 %global import_path %{provider}.%{provider_tld}/%{project}/%{repo}
-%global commit a506a39c591cc66af82ef7dba2ad13a09fbecd48
+%global commit 40ecb47b4cc74f3e4a4372ae65fb820cb08de03b
 %global shortcommit %(c=%{commit}; echo ${c:0:7})
 
 Name: %{repo}
-Version: 0.5.3
-Release: 16.git%{shortcommit}%{?dist}
+Version: 0.5.4
+Release: 1.git%{d_shortcommit}%{?dist}
 Summary: CLI for running app containers
 License: ASL 2.0
 URL: https://%{import_path}
