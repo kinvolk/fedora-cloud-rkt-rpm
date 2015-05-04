@@ -7,12 +7,12 @@
 %global repo rkt
 
 %global import_path %{provider}.%{provider_tld}/%{project}/%{repo}
-%global commit 40ecb47b4cc74f3e4a4372ae65fb820cb08de03b
+%global commit b1190d99eb7e335004cb4dd87c6031bf068fd204
 %global shortcommit %(c=%{commit}; echo ${c:0:7})
 
 Name: %{repo}
-Version: 0.5.4
-Release: 3.git%{shortcommit}%{?dist}
+Version: 0.5.5
+Release: 1.git%{shortcommit}%{?dist}
 Summary: CLI for running app containers
 License: ASL 2.0
 URL: https://%{import_path}
@@ -83,6 +83,9 @@ exit 0
 %{_unitdir}/%{repo}-metadata.s*
 
 %changelog
+* Mon May 04 2015 Lokesh Mandvekar <lsm5@fedoraproject.org> - 0.5.5-1
+- New version: 0.5.5, built rkt         commit#b1190d9
+
 * Wed Apr 29 2015 Lokesh Mandvekar <lsm5@fedoraproject.org> - 0.5.4-3.git40ecb47
 - built rkt commit#40ecb47
 
