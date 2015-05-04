@@ -19,19 +19,21 @@ URL: https://%{import_path}
 ExclusiveArch: x86_64
 Source0: https://%{import_path}/archive/%{commit}/%{repo}-%{shortcommit}.tar.gz
 Source1: README.adoc
+BuildRequires: git
 BuildRequires: glibc-static
 BuildRequires: golang >= 1.3.3
 BuildRequires: go-bindata >= 3.0.7-1
-BuildRequires: squashfs-tools
 BuildRequires: golang(github.com/appc/spec/schema/types)
-BuildRequires: systemd
-BuildRequires: git
-BuildRequires: libgcrypt-devel
+BuildRequires: gperf
 BuildRequires: gtk-doc
 BuildRequires: intltool
-BuildRequires: libtool
-BuildRequires: gperf
 BuildRequires: libcap-devel
+BuildRequires: libgcrypt-devel
+BuildRequires: libtool
+BuildRequires: libmount-devel
+BuildRequires: libxkbcommon-devel
+BuildRequires: squashfs-tools
+BuildRequires: systemd
 Requires(post): systemd
 Requires(preun): systemd
 Requires(postun): systemd
