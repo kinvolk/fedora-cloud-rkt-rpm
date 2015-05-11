@@ -12,7 +12,7 @@
 
 Name: %{repo}
 Version: 0.5.5
-Release: 4.git%{shortcommit}%{?dist}
+Release: 5.git%{shortcommit}%{?dist}
 Summary: CLI for running app containers
 License: ASL 2.0
 URL: https://%{import_path}
@@ -85,6 +85,9 @@ exit 0
 %{_unitdir}/%{repo}-metadata.s*
 
 %changelog
+* Mon May 11 2015 Lokesh Mandvekar <lsm5@fedoraproject.org> - 0.5.5-5.git724e49e
+- built rkt commit#724e49e
+
 * Mon May 11 2015 Lokesh Mandvekar <lsm5@fedoraproject.org> - 0.5.5-4.git724e49e
 - built rkt commit#724e49e
 
