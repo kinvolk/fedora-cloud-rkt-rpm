@@ -79,7 +79,7 @@ exit 0
 %systemd_postun_with_restart %{repo}-metadata
 
 %files
-%doc CONTRIBUTING.md DCO LICENSE MAINTAINERS NOTICE README.md Documentation/*
+%doc CONTRIBUTING.md DCO LICENSE MAINTAINERS README.md Documentation/*
 %{_bindir}/%{repo}
 %{_libexecdir}/%{repo}/*
 %{_unitdir}/%{repo}-metadata.s*
