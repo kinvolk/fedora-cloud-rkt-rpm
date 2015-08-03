@@ -32,6 +32,7 @@ BuildRequires: libgcrypt-devel
 BuildRequires: libtool
 BuildRequires: libmount-devel
 BuildRequires: libxkbcommon-devel
+BuildRequires: perl-Config-Tiny
 BuildRequires: squashfs-tools
 BuildRequires: systemd
 Requires(post): systemd
@@ -45,21 +46,24 @@ Requires(postun): systemd
 %setup -qn %{repo}-%{commit}
 
 %build
+./autogen.sh
+%configure --with-stage1=host
+make all
 # some issues in here prevent fedora approval
 # using COPR until then
-GOPATH=$GOPATH:%{gopath}:$(pwd)/Godeps/_workspace:$(pwd)/_build \
-       RKT_STAGE1_USR_FROM=usr-from-host \
-       RKT_STAGE1_IMAGE=%{_libexecdir}/%{repo}/stage1.aci ./build
+#GOPATH=$GOPATH:%{gopath}:$(pwd)/Godeps/_workspace:$(pwd)/_build \
+#       RKT_STAGE1_USR_FROM=usr-from-host \
+#       RKT_STAGE1_IMAGE=%{_libexecdir}/%{repo}/stage1.aci ./build
 
 %install
 # create install dirs
 install -dp %{buildroot}{%{_bindir},%{_libexecdir}/%{repo},%{_unitdir}}
 
 # install rkt binary
-install -p -m 755 bin/%{repo} %{buildroot}%{_bindir}
+install -p -m 755 build-%{name}-%{version}+git/bin/%{repo} %{buildroot}%{_bindir}
 
 # install stage1.aci
-install -p -m 644 bin/stage1.aci %{buildroot}%{_libexecdir}/%{repo}
+install -p -m 644 build-%{name}-%{version}+git/bin/stage1.aci %{buildroot}%{_libexecdir}/%{repo}
 
 # install metadata unitfiles
 install -p -m 644 dist/init/systemd/%{repo}-metadata.service %{buildroot}%{_unitdir}
