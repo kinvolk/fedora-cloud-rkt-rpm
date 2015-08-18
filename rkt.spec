@@ -7,25 +7,36 @@
 %global repo rkt
 
 %global import_path %{provider}.%{provider_tld}/%{project}/%{repo}
-%global commit 6dae5d5858a5364013e2504822b450ca3e307400
+#%global commit `git log | head -1 | cut -d' ' -f2
+%global commit 45cade58135d915ca1525f268369f9bef4d4fed6
 %global shortcommit %(c=%{commit}; echo ${c:0:7})
+#%global builddir %(grep AC_INIT configure.ac  | cut -d' ' -f2| tr -d \]\[,)
+#%global version %(grep AC_INIT configure.ac  | cut -d' ' -f2| tr -d \]\[, | tr - _)
+# versions cannot have hyphens - but the version string for the build- dir does
+%global version 0.8.0_rc1+git
+%global builddir 0.8.0-rc1+git
 
-Name: %{repo}
-Version: 0.7.0
-Release: 3.git%{shortcommit}%{?dist}
-Summary: CLI for running app containers
-License: ASL 2.0
-URL: https://%{import_path}
-ExclusiveArch: x86_64
-Source0: https://%{import_path}/archive/%{commit}/%{repo}-%{shortcommit}.tar.gz
-Source1: README.adoc
+# valid values: coreos usr-from-src usr-from-host
+%global stage1_usr_from host
+
+Name:       %{repo}
+Version:    %{version}
+Release:    1.git%{shortcommit}%{?dist}
+Summary:    CLI for running app containers
+License:    ASL 2.0
+URL:        https://%{import_path}
+ExclusiveArch:  x86_64
+Source0:    https://%{import_path}/archive/%{commit}/%{name}-%{version}_%{shortcommit}.tar.gz
+#Source0:    https://%{import_path}/archive/v%{version}.tar.gz
+#Source0:    %{name}-%{version}_%{shortcommit}.tar.gz
+BuildRequires: autoconf
+BuildRequires: automake
 BuildRequires: git
 BuildRequires: glibc-static
 BuildRequires: golang >= 1.3.3
 BuildRequires: go-bindata >= 3.0.7-1
 BuildRequires: golang(github.com/appc/spec/schema/types)
 BuildRequires: gperf
-BuildRequires: gtk-doc
 BuildRequires: intltool
 BuildRequires: libcap-devel
 BuildRequires: libgcrypt-devel
@@ -34,59 +45,68 @@ BuildRequires: libmount-devel
 BuildRequires: libxkbcommon-devel
 BuildRequires: perl-Config-Tiny
 BuildRequires: squashfs-tools
-BuildRequires: systemd
-Requires(post): systemd
-Requires(preun): systemd
-Requires(postun): systemd
+
+Requires(post): systemd => 220
+Requires(preun): systemd => 220
+Requires(postun): systemd => 220
 
 %description
 %{summary}
 
 %prep
-%setup -qn %{repo}-%{commit}
+%setup -qn %{repo}-%{version}
 
 %build
 ./autogen.sh
-%configure --with-stage1=host
+
+%configure --with-stage1=%{stage1_usr_from} --with-stage1-image-path=%{_libexecdir}/%{name}/stage1.aci
 make all
-# some issues in here prevent fedora approval
-# using COPR until then
-#GOPATH=$GOPATH:%{gopath}:$(pwd)/Godeps/_workspace:$(pwd)/_build \
-#       RKT_STAGE1_USR_FROM=usr-from-host \
-#       RKT_STAGE1_IMAGE=%{_libexecdir}/%{repo}/stage1.aci ./build
 
 %install
-# create install dirs
-install -dp %{buildroot}{%{_bindir},%{_libexecdir}/%{repo},%{_unitdir}}
+# install binaries
+install -dp %{buildroot}{%{_bindir},%{_libexecdir}/%{name},%{_unitdir}}
 
-# install rkt binary
-install -p -m 755 build-%{name}-%{version}+git/bin/%{repo} %{buildroot}%{_bindir}
-
-# install stage1.aci
-install -p -m 644 build-%{name}-%{version}+git/bin/stage1.aci %{buildroot}%{_libexecdir}/%{repo}
+install -p -m 755 build-%{name}-%{builddir}/bin/%{name} %{buildroot}%{_bindir}
+install -p -m 644 build-%{name}-%{builddir}/bin/stage1.aci %{buildroot}%{_libexecdir}/%{name}/stage1.aci
 
 # install metadata unitfiles
-install -p -m 644 dist/init/systemd/%{repo}-metadata.service %{buildroot}%{_unitdir}
-install -p -m 644 dist/init/systemd/%{repo}-metadata.socket %{buildroot}%{_unitdir}
+install -p -m 644 dist/init/systemd/%{name}-gc.timer %{buildroot}%{_unitdir}
+install -p -m 644 dist/init/systemd/%{name}-gc.service %{buildroot}%{_unitdir}
+install -p -m 644 dist/init/systemd/%{name}-metadata.socket %{buildroot}%{_unitdir}
+install -p -m 644 dist/init/systemd/%{name}-metadata.service %{buildroot}%{_unitdir}
 
-%pre
-getent group %{repo} > /dev/null || %{_sbindir}/groupadd -r %{repo}
-exit 0
+# Install runtime directories
+install -dp %{buildroot}%{_sharedstatedir}/%{name}
+install -dp %{buildroot}%{_sharedstatedir}/%{name}/cas
+install -dp %{buildroot}%{_sharedstatedir}/%{name}/cas/db
+install -dp %{buildroot}%{_sharedstatedir}/%{name}/tmp
+install -dp %{buildroot}%{_sharedstatedir}/%{name}/containers
 
 %post
-%systemd_post %{repo}-metadata
+%systemd_post %{name}-metadata
 
 %preun
-%systemd_preun %{repo}-metadata
+%systemd_preun %{name}-metadata
 
 %postun
-%systemd_postun_with_restart %{repo}-metadata
+%systemd_postun_with_restart %{name}-metadata
 
 %files
-%doc CONTRIBUTING.md DCO LICENSE MAINTAINERS README.md Documentation/*
-%{_bindir}/%{repo}
-%{_libexecdir}/%{repo}
-%{_unitdir}/%{repo}-metadata.s*
+%doc CONTRIBUTING.md DCO LICENSE README.md Documentation/*
+
+%{_bindir}/%{name}
+%{_libexecdir}/%{name}/stage1.aci
+
+%{_unitdir}/%{name}-gc.timer
+%{_unitdir}/%{name}-gc.service
+%{_unitdir}/%{name}-metadata.socket
+%{_unitdir}/%{name}-metadata.service
+
+%attr(0755,root,root) %{_sharedstatedir}/%{name}
+%attr(0775,root,root) %{_sharedstatedir}/%{name}/cas
+%attr(0775,root,root) %{_sharedstatedir}/%{name}/cas/db
+%attr(0775,root,root) %{_sharedstatedir}/%{name}/tmp
+%attr(0700,root,root) %{_sharedstatedir}/%{name}/containers
 
 %changelog
 * Mon Aug 03 2015 Lokesh Mandvekar <lsm5@fedoraproject.org> - 0.7.0-3.git6dae5d5
