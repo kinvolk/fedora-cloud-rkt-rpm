@@ -54,8 +54,7 @@ Requires(postun): systemd >= 222
 
 %build
 ./autogen.sh
-
-%configure --with-stage1-flavors=%{stage1_flavors}
+./configure --with-stage1-flavors=%{stage1_flavors}
 make all
 
 %install
