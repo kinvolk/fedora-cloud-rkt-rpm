@@ -62,7 +62,7 @@ make all
 install -dp %{buildroot}{%{_bindir},%{_libexecdir}/%{name},%{_unitdir}}
 
 install -p -m 755 build-%{name}-%{version}+git/bin/%{name} %{buildroot}%{_bindir}
-install -p -m 644 build-%{name}-%{version}+git/bin/stage1.aci %{buildroot}%{_libexecdir}/%{name}/stage1.aci
+install -p -m 644 build-%{name}-%{version}+git/bin/stage1-host.aci %{buildroot}%{_libexecdir}/%{name}
 
 # install metadata unitfiles
 install -p -m 644 dist/init/systemd/%{name}-gc.timer %{buildroot}%{_unitdir}
@@ -90,7 +90,7 @@ install -dp -m 700 %{buildroot}%{_sharedstatedir}/%{name}/containers
 %doc CONTRIBUTING.md DCO LICENSE README.md Documentation/*
 
 %{_bindir}/%{name}
-%{_libexecdir}/%{name}/stage1.aci
+%{_libexecdir}/%{name}/stage1-host.aci
 
 %{_unitdir}/%{name}-gc.timer
 %{_unitdir}/%{name}-gc.service
