@@ -8,7 +8,7 @@
 %global import_path %{provider}.%{provider_tld}/%{project}/%{repo}
 %global commit0 13702b92f2cd0686b876e14fa1f86ac74ff8ea34
 %global shortcommit0 %(c=%{commit0}; echo ${c:0:7})
-%global version 0.8.0
+%global version 0.15.0
 
 # valid values: coreos usr-from-src usr-from-host
 %global stage1_flavors host
