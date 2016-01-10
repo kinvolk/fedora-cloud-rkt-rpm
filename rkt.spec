@@ -1,5 +1,3 @@
-%global __os_install_post %{_rpmconfigdir}/brp-compress
-
 %global debug_package %{nil}
 %global provider github
 %global provider_tld com
