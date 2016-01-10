@@ -13,7 +13,7 @@
 %global version 0.8.0
 
 # valid values: coreos usr-from-src usr-from-host
-%global stage1_usr_from host
+%global stage1_flavors host
 
 Name:       %{repo}
 Version:    %{version}
@@ -34,6 +34,7 @@ BuildRequires: golang(github.com/appc/spec/schema/types)
 BuildRequires: gperf
 BuildRequires: gnupg
 BuildRequires: intltool
+BuildRequires: libacl-devel
 BuildRequires: libcap-devel
 BuildRequires: libgcrypt-devel
 BuildRequires: libtool
@@ -41,11 +42,11 @@ BuildRequires: libmount-devel
 BuildRequires: libxkbcommon-devel
 BuildRequires: perl-Config-Tiny
 BuildRequires: squashfs-tools
-BuildRequires: systemd >= 220
+BuildRequires: systemd >= 222
 
-Requires(post): systemd >= 220
-Requires(preun): systemd >= 220
-Requires(postun): systemd >= 220
+Requires(post): systemd >= 222
+Requires(preun): systemd >= 222
+Requires(postun): systemd >= 222
 
 %description
 %{summary}
@@ -56,7 +57,7 @@ Requires(postun): systemd >= 220
 %build
 ./autogen.sh
 
-%configure --with-stage1=%{stage1_usr_from} --with-stage1-image-path=%{_libexecdir}/%{name}/stage1.aci
+%configure --with-stage1-flavors=%{stage1_flavors}
 make all
 
 %install
