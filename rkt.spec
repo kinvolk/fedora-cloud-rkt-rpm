@@ -64,8 +64,8 @@ make all
 # install binaries
 install -dp %{buildroot}{%{_bindir},%{_libexecdir}/%{name},%{_unitdir}}
 
-install -p -m 755 build-%{name}-%{version}/bin/%{name} %{buildroot}%{_bindir}
-install -p -m 644 build-%{name}-%{version}/bin/stage1.aci %{buildroot}%{_libexecdir}/%{name}/stage1.aci
+install -p -m 755 build-%{name}*/bin/%{name} %{buildroot}%{_bindir}
+install -p -m 644 build-%{name}*/bin/stage1.aci %{buildroot}%{_libexecdir}/%{name}/stage1.aci
 
 # install metadata unitfiles
 install -p -m 644 dist/init/systemd/%{name}-gc.timer %{buildroot}%{_unitdir}
