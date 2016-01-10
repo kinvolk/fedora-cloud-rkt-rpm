@@ -7,10 +7,8 @@
 %global repo rkt
 
 %global import_path %{provider}.%{provider_tld}/%{project}/%{repo}
-#%%global commit %(git log | head -1 | cut -d' ' -f2)
 %global commit 13702b92f2cd0686b876e14fa1f86ac74ff8ea34
 %global shortcommit %(c=%{commit}; echo ${c:0:7})
-#%%global version %(grep AC_INIT configure.ac  | cut -d' ' -f2| tr -d \]\[, | tr - _)
 %global version 0.8.0
 
 # valid values: coreos usr-from-src usr-from-host
