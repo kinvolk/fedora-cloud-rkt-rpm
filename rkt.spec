@@ -6,9 +6,10 @@
 %global project coreos
 %global repo rkt
 
+%global git0 https://%{provider}.%{provider_tld}/%{project}/%{repo}
 %global import_path %{provider}.%{provider_tld}/%{project}/%{repo}
-%global commit 13702b92f2cd0686b876e14fa1f86ac74ff8ea34
-%global shortcommit %(c=%{commit}; echo ${c:0:7})
+%global commit0 13702b92f2cd0686b876e14fa1f86ac74ff8ea34
+%global shortcommit0 %(c=%{commit0}; echo ${c:0:7})
 %global version 0.8.0
 
 # valid values: coreos usr-from-src usr-from-host
@@ -16,12 +17,12 @@
 
 Name:       %{repo}
 Version:    %{version}
-Release:    1.git%{shortcommit}%{?dist}
+Release:    1.git%{shortcommit0}%{?dist}
 Summary:    CLI for running app containers
 License:    ASL 2.0
 URL:        https://%{import_path}
 ExclusiveArch:  x86_64
-Source0:    %{name}-%{version}_%{shortcommit}.tar.gz
+Source0:    %{git0}/archive/%{commit0}/%{name}-%{shortcommit0}.tar.gz
 BuildRequires: autoconf
 BuildRequires: automake
 BuildRequires: git
