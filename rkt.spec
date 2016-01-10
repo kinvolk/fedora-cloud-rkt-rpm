@@ -40,11 +40,11 @@ BuildRequires: libmount-devel
 BuildRequires: libxkbcommon-devel
 BuildRequires: perl-Config-Tiny
 BuildRequires: squashfs-tools
-BuildRequires: systemd => 220
+BuildRequires: systemd >= 220
 
-Requires(post): systemd => 220
-Requires(preun): systemd => 220
-Requires(postun): systemd => 220
+Requires(post): systemd >= 220
+Requires(preun): systemd >= 220
+Requires(postun): systemd >= 220
 
 %description
 %{summary}
