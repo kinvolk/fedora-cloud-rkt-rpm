@@ -25,6 +25,7 @@ ExclusiveArch:  x86_64
 Source0:    %{git0}/archive/%{commit0}/%{name}-%{shortcommit0}.tar.gz
 BuildRequires: autoconf
 BuildRequires: automake
+BuildRequires: bc
 BuildRequires: git
 BuildRequires: glibc-static
 BuildRequires: golang >= 1.3.3
