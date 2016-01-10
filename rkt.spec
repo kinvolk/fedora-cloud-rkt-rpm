@@ -32,6 +32,7 @@ BuildRequires: golang >= 1.3.3
 BuildRequires: go-bindata >= 3.0.7-1
 BuildRequires: golang(github.com/appc/spec/schema/types)
 BuildRequires: gperf
+BuildRequires: gnupg
 BuildRequires: intltool
 BuildRequires: libcap-devel
 BuildRequires: libgcrypt-devel
