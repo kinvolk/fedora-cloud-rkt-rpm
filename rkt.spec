@@ -49,7 +49,7 @@ Requires(postun): systemd >= 220
 %{summary}
 
 %prep
-%setup -qn %{repo}-%{version}
+%setup -qn %{name}-%{commit0}
 
 %build
 ./autogen.sh
