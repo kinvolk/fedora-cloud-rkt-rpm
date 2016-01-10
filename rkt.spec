@@ -6,7 +6,7 @@
 
 %global git0 https://%{provider}.%{provider_tld}/%{project}/%{repo}
 %global import_path %{provider}.%{provider_tld}/%{project}/%{repo}
-%global commit0 13702b92f2cd0686b876e14fa1f86ac74ff8ea34
+%global commit0 7575500011a56584755be5e9978c8cfef4aff433
 %global shortcommit0 %(c=%{commit0}; echo ${c:0:7})
 %global version 0.15.0
 
@@ -15,7 +15,7 @@
 
 Name:       %{repo}
 Version:    %{version}
-Release:    1.git%{shortcommit0}%{?dist}
+Release:    2.git%{shortcommit0}%{?dist}
 Summary:    CLI for running app containers
 License:    ASL 2.0
 URL:        https://%{import_path}
@@ -103,6 +103,9 @@ install -dp -m 700 %{buildroot}%{_sharedstatedir}/%{name}/containers
 %{_sharedstatedir}/%{name}/containers
 
 %changelog
+* Sun Jan 10 2016 Lokesh Mandvekar <lsm5@fedoraproject.org> - 0.15.0-2.git7575500
+- built commit#7575500
+
 * Mon Aug 03 2015 Lokesh Mandvekar <lsm5@fedoraproject.org> - 0.7.0-3.git6dae5d5
 - built rkt commit#6dae5d5
 
