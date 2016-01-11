@@ -55,7 +55,10 @@ Requires(postun): systemd >= 222
 
 %build
 ./autogen.sh
-./configure --with-stage1-flavors=%{stage1_flavors}
+# ./configure flags: https://github.com/coreos/rkt/blob/master/Documentation/build-configure.md
+./configure --with-stage1-flavors=%{stage1_flavors} \
+            --with-stage1-flavors-version-override=%{version}-%{release} \
+            --with-stage1-default-location=%{_libexecdir}/%{name}/stage1-host.aci
 make all
 
 %install
