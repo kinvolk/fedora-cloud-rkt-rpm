@@ -42,6 +42,7 @@ BuildRequires: perl-Config-Tiny
 BuildRequires: squashfs-tools
 BuildRequires: systemd >= 222
 
+Requires(pre): shadow-utils
 Requires(post): systemd >= 222
 Requires(preun): systemd >= 222
 Requires(postun): systemd >= 222
@@ -71,11 +72,30 @@ install -p -m 644 dist/init/systemd/%{name}-metadata.socket %{buildroot}%{_unitd
 install -p -m 644 dist/init/systemd/%{name}-metadata.service %{buildroot}%{_unitdir}
 
 # Install runtime directories
-install -dp -m 755 %{buildroot}%{_sharedstatedir}/%{name}
-install -dp -m 755 %{buildroot}%{_sharedstatedir}/%{name}/cas
-install -dp -m 755 %{buildroot}%{_sharedstatedir}/%{name}/cas/db
-install -dp -m 755 %{buildroot}%{_sharedstatedir}/%{name}/tmp
-install -dp -m 700 %{buildroot}%{_sharedstatedir}/%{name}/containers
+# https://github.com/coreos/rkt/blob/master/Documentation/packaging.md#ownership-and-permissions-of-rkt-directories
+install -dp -m 770 %{buildroot}%{_sharedstatedir}/%{name}
+install -dp -m 770 %{buildroot}%{_sharedstatedir}/%{name}/cas
+install -dp -m 770 %{buildroot}%{_sharedstatedir}/%{name}/cas/db
+install -dp -m 770 %{buildroot}%{_sharedstatedir}/%{name}/cas/imagelocks
+install -dp -m 770 %{buildroot}%{_sharedstatedir}/%{name}/cas/imageManifest
+install -dp -m 770 %{buildroot}%{_sharedstatedir}/%{name}/cas/blob
+install -dp -m 770 %{buildroot}%{_sharedstatedir}/%{name}/cas/tmp
+install -dp -m 750 %{buildroot}%{_sharedstatedir}/%{name}/cas/tree
+install -dp -m 750 %{buildroot}%{_sharedstatedir}/%{name}/cas/treestorelocks
+install -dp -m 770 %{buildroot}%{_sharedstatedir}/%{name}/locks
+
+install -dp -m 750 %{buildroot}%{_sharedstatedir}/%{name}/pods
+install -dp -m 750 %{buildroot}%{_sharedstatedir}/%{name}/pods/embryo
+install -dp -m 750 %{buildroot}%{_sharedstatedir}/%{name}/pods/prepare
+install -dp -m 750 %{buildroot}%{_sharedstatedir}/%{name}/pods/prepared
+install -dp -m 750 %{buildroot}%{_sharedstatedir}/%{name}/pods/run
+install -dp -m 750 %{buildroot}%{_sharedstatedir}/%{name}/pods/exited-garbage
+install -dp -m 750 %{buildroot}%{_sharedstatedir}/%{name}/pods/garbage
+
+%pre
+
+getent group rkt >/dev/null || groupadd -r rkt
+exit 0
 
 %post
 %systemd_post %{name}-metadata
@@ -97,10 +117,24 @@ install -dp -m 700 %{buildroot}%{_sharedstatedir}/%{name}/containers
 %{_unitdir}/%{name}-metadata.socket
 %{_unitdir}/%{name}-metadata.service
 
-%{_sharedstatedir}/%{name}/cas
-%{_sharedstatedir}/%{name}/cas/db
-%{_sharedstatedir}/%{name}/tmp
-%{_sharedstatedir}/%{name}/containers
+%attr(2770, root, rkt) %{_sharedstatedir}/%{name}
+%attr(2770, root, rkt) %{_sharedstatedir}/%{name}/cas
+%attr(2770, root, rkt) %{_sharedstatedir}/%{name}/cas/db
+%attr(2770, root, rkt) %{_sharedstatedir}/%{name}/cas/imagelocks
+%attr(2770, root, rkt) %{_sharedstatedir}/%{name}/cas/imageManifest
+%attr(2770, root, rkt) %{_sharedstatedir}/%{name}/cas/blob
+%attr(2770, root, rkt) %{_sharedstatedir}/%{name}/cas/tmp
+%attr(2750, root, rkt) %{_sharedstatedir}/%{name}/cas/tree
+%attr(2750, root, rkt) %{_sharedstatedir}/%{name}/cas/treestorelocks
+%attr(2770, root, rkt) %{_sharedstatedir}/%{name}/locks
+
+%attr(2750, root, rkt) %{_sharedstatedir}/%{name}/pods
+%attr(2750, root, rkt) %{_sharedstatedir}/%{name}/pods/embryo
+%attr(2750, root, rkt) %{_sharedstatedir}/%{name}/pods/prepare
+%attr(2750, root, rkt) %{_sharedstatedir}/%{name}/pods/prepared
+%attr(2750, root, rkt) %{_sharedstatedir}/%{name}/pods/run
+%attr(2750, root, rkt) %{_sharedstatedir}/%{name}/pods/exited-garbage
+%attr(2750, root, rkt) %{_sharedstatedir}/%{name}/pods/garbage
 
 %changelog
 * Sun Jan 10 2016 Lokesh Mandvekar <lsm5@fedoraproject.org> - 0.15.0-2.git7575500
